@@ -16,5 +16,6 @@ module.exports = {
     'require-jsdoc': 'off',
     'no-trailing-spaces': 'off',
     'operator-linebreak': 'off',
+    'max-len': 'off',
   },
 };
