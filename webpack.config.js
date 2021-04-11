@@ -107,3 +107,4 @@ module.exports = (env, argv) => {
 // npm install eslint-webpack-plugin eslint --save-dev
 // npm install @babel/eslint-parser --save-dev
 // npm install --save-dev eslint-config-google
+// npm install --save-dev @babel/plugin-proposal-class-properties
