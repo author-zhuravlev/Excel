@@ -12,17 +12,17 @@
     display: flex;
     flex-direction: row;
     min-width: 20px;
+    min-height: 24px;
     height: $row-height;
   }
 
   .row-info {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-width: $info-cell-width;
     height: 100%;
-    //border-bottom: 1px solid $border-color;
-    //border-right: 1px solid $border-color;
     border: 1px solid $border-color;
     border-top: none;
     background: #f8f9fa;
@@ -33,6 +33,7 @@
   }
 
   .column {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,8 +58,39 @@
 
     &.selected {
       border: none;
-      outline: 2px solid #3c74ff;
+      outline: 2px solid $primary-color;
       z-index: 2;
+    }
+  }
+
+  .col-resize, .row-resize {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    background: $primary-color;
+    z-index: 4;
+    
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  .col-resize {
+    top: 0;
+    width: 4px;
+
+    &:hover {
+      cursor: col-resize;
+    }
+  }
+
+  .row-resize {
+    left: 0;
+    height: 4px;
+
+    &:hover {
+      cursor: row-resize;
     }
   }
 }

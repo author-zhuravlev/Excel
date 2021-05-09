@@ -1,16 +1,16 @@
 import {capitalize} from '@core/utils';
 
 export class DomListener {
-  constructor($root, listeners = []) {
-    if (!$root) {
-      throw new Error(`No $root provided for DomListener`);
+  constructor($el, listeners = []) {
+    if (!$el) {
+      throw new Error(`No $el provided for DomListener`);
     }
-    this.$root = $root;
+    this.$el = $el;
     this.listeners = listeners;
   }
 
   initDOMListeners() {
-    // console.log(this); 
+    // console.log(this);
     this.listeners.forEach((listener) => {
       const method = getMethodName(listener);
 
@@ -20,14 +20,14 @@ export class DomListener {
 
       this[method] = this[method].bind(this); // "биндим" и переприсваиваем метод
 
-      this.$root.on(listener, this[method]);
+      this.$el.on(listener, this[method]);
     });
   }
 
   removeDOMListeners() {
     this.listeners.forEach((listener) => {
       const method = getMethodName(listener);
-      this.$root.off(listener, this[method]);
+      this.$el.off(listener, this[method]);
     });
   }
 }
