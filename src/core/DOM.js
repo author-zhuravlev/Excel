@@ -40,6 +40,28 @@ class DOM {
   off(eventType, callback) {
     this.$nativeElement.removeEventListener(eventType, callback);
   }
+
+  closest(selector) {
+    return $(this.$nativeElement.closest(selector));
+  }
+
+  getCoords() {
+    return this.$nativeElement.getBoundingClientRect();
+  }
+
+  get data() {
+    return this.$nativeElement.dataset;
+  }
+
+  findAll(selector) {
+    return this.$nativeElement.querySelectorAll(selector);
+  }
+
+  css(styles = {}) {
+    Object
+        .keys(styles)
+        .forEach(key => this.$nativeElement.style[key] = styles[key]);
+  }
 }
 
 export function $(selector) {

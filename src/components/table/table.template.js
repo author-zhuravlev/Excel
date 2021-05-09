@@ -3,62 +3,56 @@ const CODES = {
   Z: 90,
 };
 
-function createCells(colsCount) {
-  let cells = '';
+const createRow = (index, content) => {
+  const resize = index 
+    ? '<div class="row-resize" data-resize="row"></div>' 
+    : '';
 
-  for (let i = 0; i <= colsCount; i++) {
-    cells += `<div class="cell" contenteditable></div>`;
-  }
-
-  return cells;
-}
-
-function createRow(index, content) {
   return `
-    <div class="row">
-      <div class="row-info">${index ?? ''}</div>
+    <div class="row" data-type="resizable" data-row=${index}>
+      <div class="row-info">
+        ${index ?? ''}
+        ${resize}
+      </div>
       <div class="row-data">${content}</div>
     </div>
   `;
-}
+};
 
-// function toColumn(col) {
-//   return `
-//     <div class="column">${col}</div>
-//   `;
-// }
+const toColumn = (index) => `
+    <div class="column" data-type="resizable" data-col=${index}>
+      ${toChar(index)}
+      <div class="col-resize" data-resize="col"></div>
+    </div>
+`;
 
-// function toChar(_, index) {
-//   return String.fromCharCode(CODES.A + index);
-// }
+const toCell = (col) => `<div class="cell" data-col="${col}" contenteditable></div>`;
 
-function toChar(index) {
-  return String.fromCharCode(CODES.A + index);
-}
+const toChar = (index) => String.fromCharCode(CODES.A + index);
 
-export function createTable(rowsCount = 15) {
-  // const colsCount = CODES.Z - CODES.A + 1;
+const cycle = (count, callback) => {
+  let cells = '';
+
+  for (let i = 0; i <= count; i++) {
+    cells += callback(i);
+  }
+
+  return cells;
+};
+
+export const createTable = (rowsCount = 15) => {
   const colsCount = CODES.Z - CODES.A;
   const rows = [];
-  let cols = '';
 
-  // const cols = new Array(colsCount)
-  //     .fill('')
-  //     .map(toChar)
-  //     .map(toColumn)
-  //     .join('');
-
-  for (let i = 0; i <= colsCount; i++) {
-    cols += `<div class="column">${toChar(i)}</div>`;
-  }
+  const cols = cycle(colsCount, toColumn);
 
   rows.push(createRow(null, cols));
 
   for (let i = 0; i < rowsCount; i++) {
-    const cells = createCells(colsCount);
+    const cells = cycle(colsCount, toCell);
 
     rows.push(createRow(i + 1, cells));
   }
 
   return rows.join('');
-}
+};

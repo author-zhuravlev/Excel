@@ -3,8 +3,8 @@ import {ExcelComponent} from '@core/ExcelComponent';
 export class Formula extends ExcelComponent {
   static className = 'excel__formula';
 
-  constructor($root) {
-    super($root, {
+  constructor($el) {
+    super($el, {
       // name: 'Formula',
       listeners: ['input', 'click'],
     });
@@ -13,7 +13,7 @@ export class Formula extends ExcelComponent {
   toHtml() {
     return `
       <div class="info">fx</div>
-      <div class="input" contenteditable="true" spellcheck="false"></div>
+      <div class="input" contenteditable spellcheck="false"></div>
     `;
   }
 
