@@ -5,12 +5,14 @@ export const resizeHandler = (e, $el) => {
   const $parent = $resizer.closest('[data-type="resizable"]');
   const coords = $parent.getCoords();
   const type = $resizer.data.resize;
-  const sideProp = type === 'col' ? 'height' : 'width';
+  const isTypeCol = type === 'col';
+  const sidePropSize = isTypeCol ? 'height' : 'width';
+  const sidePropPosition = isTypeCol ? 'right' : 'bottom';
   let value;
 
   $resizer.css({
     opacity: 1,
-    [sideProp]: type === 'col' ? '100vh' : '100vw',
+    [sidePropSize]: isTypeCol ? '100vh' : '100vw',
   });
 
   document.onmousemove = (event) => {
@@ -47,8 +49,8 @@ export const resizeHandler = (e, $el) => {
 
     $resizer.css({
       opacity: 0,
-      [type === 'col' ? 'right' : 'bottom']: 0,
-      [type === 'col' ? 'height' : 'width']: '',
+      [sidePropSize]: '',
+      [sidePropPosition]: 0,
     });
   };
 };
