@@ -1,6 +1,6 @@
 import {$} from '@core/DOM';
 
-export const resizeHandler = (e, $el) => {
+export const resizeHandler = (e, $table) => {
   const $resizer = $(e.target);
   const $parent = $resizer.closest('[data-type="resizable"]');
   const coords = $parent.getCoords();
@@ -8,7 +8,19 @@ export const resizeHandler = (e, $el) => {
   const isTypeCol = type === 'col';
   const sidePropSize = isTypeCol ? 'height' : 'width';
   const sidePropPosition = isTypeCol ? 'right' : 'bottom';
-  let value;
+  let value; // новое значение ширины или высоты
+
+  const mouseMove = isTypeCol // определяем функцию, которая будет рассчитывать value 
+    ? (event) => {
+      const delta = event.pageX - coords.right;
+      value = coords.width + delta;
+      $resizer.css({right: -delta + 'px'});
+    } 
+    : (event) => {
+      const delta = event.pageY - coords.bottom;
+      value = coords.height + delta;
+      $resizer.css({bottom: -delta + 'px'});
+    };
 
   $resizer.css({
     opacity: 1,
@@ -17,20 +29,8 @@ export const resizeHandler = (e, $el) => {
 
   document.onmousemove = (event) => {
     event.preventDefault();
-    let delta;
-    
-    switch (type) {
-      case 'col':
-        delta = event.pageX - coords.right;
-        value = coords.width + delta;
-        $resizer.css({right: -delta + 'px'});
-        break;
-      case 'row':
-        delta = event.pageY - coords.bottom;
-        value = coords.height + delta;
-        $resizer.css({bottom: -delta + 'px'});
-        break;
-    }
+
+    mouseMove(event);
   };
 
   document.onmouseup = () => {
@@ -39,7 +39,7 @@ export const resizeHandler = (e, $el) => {
 
     switch (type) {
       case 'col':
-        $el.findAll(`[data-col="${$parent.data.col}"]`)
+        $table.findAll(`[data-col="${$parent.data.col}"]`)
             .forEach(el => el.style.width = value + 'px');
         break;
       case 'row':
