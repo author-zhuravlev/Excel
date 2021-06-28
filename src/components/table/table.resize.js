@@ -1,6 +1,26 @@
 import {$} from '@core/DOM';
 
-export const resizeHandler = (e, $el) => {
+// определяем функцию, которая будет рассчитывать value и delta
+// в зависимости от типа ячейки
+const move = (isTypeCol) => isTypeCol
+  ? (event, coords) => {
+    const delta = event.pageX - coords.right;
+
+    return {
+      val: coords.width + delta,
+      css: {right: -delta + 'px'},
+    };
+  } 
+  : (event, coords) => {
+    const delta = event.pageY - coords.bottom;
+
+    return {
+      val: coords.height + delta,
+      css: {bottom: -delta + 'px'},
+    };
+  };
+
+export const resizeHandler = (e, $table) => {
   const $resizer = $(e.target);
   const $parent = $resizer.closest('[data-type="resizable"]');
   const coords = $parent.getCoords();
@@ -8,7 +28,8 @@ export const resizeHandler = (e, $el) => {
   const isTypeCol = type === 'col';
   const sidePropSize = isTypeCol ? 'height' : 'width';
   const sidePropPosition = isTypeCol ? 'right' : 'bottom';
-  let value;
+  const mouseMove = move(isTypeCol);
+  let value; // новое значение ширины или высоты
 
   $resizer.css({
     opacity: 1,
@@ -17,20 +38,12 @@ export const resizeHandler = (e, $el) => {
 
   document.onmousemove = (event) => {
     event.preventDefault();
-    let delta;
-    
-    switch (type) {
-      case 'col':
-        delta = event.pageX - coords.right;
-        value = coords.width + delta;
-        $resizer.css({right: -delta + 'px'});
-        break;
-      case 'row':
-        delta = event.pageY - coords.bottom;
-        value = coords.height + delta;
-        $resizer.css({bottom: -delta + 'px'});
-        break;
-    }
+
+    const {val, css} = mouseMove(event, coords);
+
+    value = val;
+
+    $resizer.css(css);
   };
 
   document.onmouseup = () => {
@@ -39,7 +52,7 @@ export const resizeHandler = (e, $el) => {
 
     switch (type) {
       case 'col':
-        $el.findAll(`[data-col="${$parent.data.col}"]`)
+        $table.findAll(`[data-col="${$parent.data.col}"]`)
             .forEach(el => el.style.width = value + 'px');
         break;
       case 'row':
