@@ -1,5 +1,25 @@
 import {$} from '@core/DOM';
 
+// определяем функцию, которая будет рассчитывать value и delta
+// в зависимости от типа ячейки
+const move = (isTypeCol) => isTypeCol
+  ? (event, coords) => {
+    const delta = event.pageX - coords.right;
+
+    return {
+      val: coords.width + delta,
+      css: {right: -delta + 'px'},
+    };
+  } 
+  : (event, coords) => {
+    const delta = event.pageY - coords.bottom;
+
+    return {
+      val: coords.height + delta,
+      css: {bottom: -delta + 'px'},
+    };
+  };
+
 export const resizeHandler = (e, $table) => {
   const $resizer = $(e.target);
   const $parent = $resizer.closest('[data-type="resizable"]');
@@ -8,19 +28,8 @@ export const resizeHandler = (e, $table) => {
   const isTypeCol = type === 'col';
   const sidePropSize = isTypeCol ? 'height' : 'width';
   const sidePropPosition = isTypeCol ? 'right' : 'bottom';
+  const mouseMove = move(isTypeCol);
   let value; // новое значение ширины или высоты
-
-  const mouseMove = isTypeCol // определяем функцию, которая будет рассчитывать value 
-    ? (event) => {
-      const delta = event.pageX - coords.right;
-      value = coords.width + delta;
-      $resizer.css({right: -delta + 'px'});
-    } 
-    : (event) => {
-      const delta = event.pageY - coords.bottom;
-      value = coords.height + delta;
-      $resizer.css({bottom: -delta + 'px'});
-    };
 
   $resizer.css({
     opacity: 1,
@@ -30,7 +39,11 @@ export const resizeHandler = (e, $table) => {
   document.onmousemove = (event) => {
     event.preventDefault();
 
-    mouseMove(event);
+    const {val, css} = mouseMove(event, coords);
+
+    value = val;
+
+    $resizer.css(css);
   };
 
   document.onmouseup = () => {

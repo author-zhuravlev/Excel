@@ -7,11 +7,12 @@ const createRow = (index, content) => {
   const resize = index 
     ? '<div class="row-resize" data-resize="row"></div>' 
     : '';
+  const rowIndex = index ?? '';
 
   return `
-    <div class="row" data-type="resizable" data-row=${index}>
+    <div class="row" data-type="resizable" data-row="${rowIndex}">
       <div class="row-info">
-        ${index ?? ''}
+        ${rowIndex}
         ${resize}
       </div>
       <div class="row-data">${content}</div>
@@ -19,39 +20,43 @@ const createRow = (index, content) => {
   `;
 };
 
-const toColumn = (index) => `
-    <div class="column" data-type="resizable" data-col=${index}>
-      ${toChar(index)}
-      <div class="col-resize" data-resize="col"></div>
-    </div>
+const toColumn = (_, index) => `
+  <div class="column" data-type="resizable" data-col="${index}">
+    ${toChar(index)}
+    <div class="col-resize" data-resize="col"></div>
+  </div>
 `;
 
-const toCell = (col) => `<div class="cell" data-col="${col}" contenteditable></div>`;
+const toCell = (row, col) => `
+  <div
+    class="cell"
+    data-col="${col}"
+    data-type="cell"
+    data-id="${row}:${col}"
+    contenteditable
+    spellcheck></div>
+`;
 
 const toChar = (index) => String.fromCharCode(CODES.A + index);
 
-const cycle = (count, callback) => {
-  let cells = '';
-
-  for (let i = 0; i <= count; i++) {
-    cells += callback(i);
-  }
-
-  return cells;
-};
-
 export const createTable = (rowsCount = 15) => {
-  const colsCount = CODES.Z - CODES.A;
+  const colsCount = CODES.Z - CODES.A + 1; // 26 letters 
   const rows = [];
 
-  const cols = cycle(colsCount, toColumn);
+  const cols = new Array(colsCount)
+      .fill('')
+      .map(toColumn)
+      .join('');
 
   rows.push(createRow(null, cols));
 
-  for (let i = 0; i < rowsCount; i++) {
-    const cells = cycle(colsCount, toCell);
+  for (let row = 0; row < rowsCount; row++) {
+    const cells = new Array(colsCount)
+        .fill(row)
+        .map(toCell)
+        .join('');
 
-    rows.push(createRow(i + 1, cells));
+    rows.push(createRow(row + 1, cells));
   }
 
   return rows.join('');
