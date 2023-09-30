@@ -1,41 +1,44 @@
-import {ExcelComponent} from '@core/ExcelComponent';
+import { $ } from '@core/DOM';
+import { ExcelStateComponent } from '@core/ExcelStateComponent';
+import { createToolbar } from './toolbar.template';
+import { defaultCellStyles } from '@/constants';
 
-export class Toolbar extends ExcelComponent {
+export class Toolbar extends ExcelStateComponent {
   static className = 'excel__toolbar';
 
   constructor($el, options) {
     super($el, {
-      name: 'Toolbar',
-      listeners: [],
       ...options,
+      name: 'Toolbar',
+      listeners: ['click'],
+      subscriptions: ['currentStyles'],
     });
   }
 
+  prepare() {
+    this.initState(defaultCellStyles);
+  }
+
+  get template() {
+    return createToolbar(this.state);
+  }
+
   toHtml() {
-    return `
-      <div class="button">
-        <span class="material-icons">format_align_left</span>
-      </div>
+    return this.template;
+  }
 
-      <div class="button">
-        <span class="material-icons">format_align_center</span>
-      </div>
+  storeChanged(changes) {
+    this.setState(changes.currentStyles);
+  }
 
-      <div class="button">
-        <span class="material-icons">format_align_right</span>
-      </div>
+  onClick(e) {
+    const $target = $(e.target);
+    
+    if ($target.data.type === 'button') {
+      const value = JSON.parse($target.data.value);
 
-      <div class="button">
-        <span class="material-icons">format_bold</span>
-      </div>
-
-      <div class="button">
-        <span class="material-icons">format_italic</span>
-      </div>
-
-      <div class="button">
-        <span class="material-icons">format_underlined</span>
-      </div>
-    `;
+      // this.setState(value);
+      this.$emit('Toolbar:applyStyle', value);
+    }
   }
 }

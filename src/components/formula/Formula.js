@@ -1,5 +1,5 @@
-import {$} from '@core/DOM';
-import {ExcelComponent} from '@core/ExcelComponent';
+import { $ } from '@core/DOM';
+import { ExcelComponent } from '@core/ExcelComponent';
 
 const keys = ['Enter', 'Tab'];
 
@@ -8,24 +8,25 @@ export class Formula extends ExcelComponent {
 
   constructor($el, options) {
     super($el, {
+      ...options,
       name: 'Formula',
       listeners: ['input', 'keydown'],
-      ...options,
+      subscriptions: ['currentText'],
     });
   }
 
-  init() {//
+  init() {
     super.init();
     this.$formula = this.$el.find('#formula');
 
-    const addTextToFormula = (text) => {
-      this.$formula.text(text);
-    };
-
     // подписываемся на события
-    this.$on('Table:select', addTextToFormula);
-    this.$on('Table:input', addTextToFormula);
-    this.$on('Table:mousedown', addTextToFormula);
+    this.$on('Table:select', ($cell) => {
+      this.$formula.text($cell.data.value);
+    });
+  }
+
+  storeChanged({ currentText }) {
+    this.$formula.text(currentText);
   }
 
   toHtml() {
@@ -44,6 +45,6 @@ export class Formula extends ExcelComponent {
       e.preventDefault();
 
       this.$emit('Formula:done');
-    } 
+    }
   }
 }

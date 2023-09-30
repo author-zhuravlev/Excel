@@ -6,7 +6,7 @@ export class Emitter {
   emit(event, ...args) {
     if (!Array.isArray(this.listeners[event])) return false;
 
-    this.listeners[event].forEach(listener => {
+    this.listeners[event].forEach((listener) => {
       listener(...args);
     });
 
@@ -18,9 +18,11 @@ export class Emitter {
 
     this.listeners[event].push(fn);
 
-    return () => { // возвращаем fn, чтобы отписаться
-      this.listeners[event] = this.listeners[event]
-          .filter(listener => listener !== fn);
+    // возвращаем fn, чтобы отписаться
+    return () => {
+      this.listeners[event] = this.listeners[event].filter(
+        (listener) => listener !== fn
+      );
     };
   }
 }
