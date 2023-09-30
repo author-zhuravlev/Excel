@@ -1,8 +1,9 @@
 class DOM {
   constructor(selector) {
-    this.$nativeElement = typeof selector === 'string' 
-      ? document.querySelector(selector)
-      : selector;
+    this.$nativeElement =
+      typeof selector === 'string'
+        ? document.querySelector(selector)
+        : selector;
   }
 
   html(html) {
@@ -15,7 +16,7 @@ class DOM {
   }
 
   text(text) {
-    if (typeof text === 'string') {
+    if (text !== undefined) {
       this.$nativeElement.textContent = text;
       return this;
     }
@@ -25,6 +26,15 @@ class DOM {
     }
 
     return this.$nativeElement.textContent.trim();
+  }
+
+  attr(name, value) {
+    if (value) {
+      this.$nativeElement.setAttribute(name, value);
+      return this;
+    }
+
+    return this.$nativeElement.getAttribute(name);
   }
 
   clear() {
@@ -67,6 +77,7 @@ class DOM {
   }
 
   id(parse) {
+    // error MAX_TABLE_COLS or MAX_TABLE_ROS
     if (parse) {
       const parsed = this.id().split(':');
       return {
@@ -74,7 +85,7 @@ class DOM {
         col: +parsed[1],
       };
     }
-    
+
     return this.data.id;
   }
 
@@ -87,9 +98,16 @@ class DOM {
   }
 
   css(styles = {}) {
-    Object
-        .keys(styles)
-        .forEach(key => this.$nativeElement.style[key] = styles[key]);
+    Object.keys(styles).forEach(
+      (key) => (this.$nativeElement.style[key] = styles[key])
+    );
+  }
+
+  getStyles(styles = []) {
+    return styles.reduce((res, s) => {
+      res[s] = this.$nativeElement.style[s];
+      return res;
+    }, {});
   }
 
   focus() {
@@ -114,11 +132,10 @@ export function $(selector) {
 
 $.create = (tagName, classes = '') => {
   const el = document.createElement(tagName);
-  
+
   if (classes) {
     el.classList.add(classes);
   }
 
   return $(el);
 };
-

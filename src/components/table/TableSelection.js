@@ -9,15 +9,15 @@ export class TableSelection {
   selected($el) {
     this.clear();
     this.current = $el;
-    $el
-        .focus()
-        .addClass(TableSelection.className);
+    $el.focus().addClass(TableSelection.className);
 
     this.group.push($el);
   }
 
   clear() {
-    this.group.forEach($el => $el.removeClass(TableSelection.className));
+    this.group.forEach(($el) => {
+      $el.removeClass(TableSelection.className);
+    });
     this.group.length = 0;
   }
 
@@ -25,6 +25,18 @@ export class TableSelection {
     this.clear();
 
     this.group = $group;
-    this.group.forEach($el => $el.addClass(TableSelection.className));
+    this.group.forEach(($el) => {
+      $el.addClass(TableSelection.className);
+    });
+  }
+
+  applyStyle(style) {
+    this.group.forEach(($el) => {
+      $el.css(style);
+    });
+  }
+
+  get ids() {
+    return this.group.map(($el) => $el.id());
   }
 }

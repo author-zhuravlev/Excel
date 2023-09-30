@@ -13,6 +13,9 @@
   "browserslist": "> 0.25%, not dead",
   "author": "Oleg Zhuravlev <oleg.zhuravlev.mail@gmail.com>",
   "license": "ISC",
+  "engines": {
+    "node": "14.17.6"
+  },
   "devDependencies": {
     "@babel/core": "^7.13.1",
     "@babel/eslint-parser": "^7.13.4",
@@ -23,7 +26,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
-    "eslint": "^7.29.0",
+    "eslint": "^7.31.0",
     "eslint-config-google": "^0.14.0",
     "eslint-webpack-plugin": "^2.5.2",
     "html-webpack-plugin": "^5.2.0",

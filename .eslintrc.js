@@ -16,6 +16,9 @@ module.exports = {
     'require-jsdoc': 'off',
     'no-trailing-spaces': 'off',
     'operator-linebreak': 'off',
-    'max-len': 'off',
+    'object-curly-spacing': 'off',
+    'quote-props': 'off',
+    'indent': ['error', 2],
   },
+  
 };
