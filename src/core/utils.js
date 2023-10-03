@@ -47,3 +47,12 @@ export const debounce = (fn, delay) => {
     }, delay);
   };
 };
+
+export const getStorageName = (params) => {
+  const [
+    name = 'excel',
+    id = Date.now().toString(),
+  ] = params;
+
+  return `${name}:${id}`; 
+};
