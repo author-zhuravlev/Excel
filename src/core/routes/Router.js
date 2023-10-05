@@ -1,3 +1,4 @@
+import { Loader } from '@/components/Loader';
 import { $ } from '../DOM';
 import { ActiveRoute } from './ActiveRoute';
 
@@ -10,6 +11,7 @@ export class Router {
     this.$placeholder = $(selector);
     this.routes = routes;
 
+    this.loader = new Loader();
     this.page = null;
 
     this.changePageHandler = this.changePageHandler.bind(this);
@@ -26,14 +28,16 @@ export class Router {
     return ActiveRoute.param[0] || 'dashboard';
   }
 
-  changePageHandler() {
+  async changePageHandler() {
     if (this.page) this.page.destroy();
-    this.$placeholder.clear();
+    this.$placeholder.clear().append(this.loader.getRoot());
 
     const Page = this.routes[this.activeRoute];
     this.page = new Page(ActiveRoute.param);
-    
-    this.$placeholder.append(this.page.getRoot());
+
+    const root = await this.page.getRoot();
+
+    this.$placeholder.clear().append(root);
 
     this.page.afterRender();
   }
